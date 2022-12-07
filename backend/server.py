@@ -4,8 +4,10 @@ from  typing import *
 import json
 from graphviz import Digraph
 import random
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
+run_with_ngrok(app)
 
     
 Grammer = []
@@ -36,27 +38,55 @@ def driver():
     global parse_table
     parse_table = [["" for c in range(len(terminals) + len(nonterminals) + 1)] for r in range(len(C))]
     construct_dfa()
-    return jsonify({"status" : "200 OK"})
+    response = jsonify({"status" : "200 OK"})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 @app.route("/first")
 def get_first():
-    return jsonify(firsts)
+    response = jsonify(firsts)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
-@app.route("/follows")
+@app.route("/follow")
 def get_follow():
-    return jsonify(follows)
+    response = jsonify(follows)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route("/terminals")
+def get_terminals():
+    response = jsonify(terminals)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route("/non-terminals")
+def get_nonterminals():
+    response = jsonify(nonterminals)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+    
 
 @app.route("/parsingtable")
 def get_parsetable():
-    return jsonify(parse_table)
+    response = jsonify(parse_table)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 @app.route("/add-input",methods=["POST"])
 def parse_input():  
     input = request.data.decode()
     to_parse = " ".join((input + " $").split()).split(" ")
     res = process_input(to_parse)
-    return jsonify(res)
+    response = jsonify(res)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
+
+@app.route('/get_image')
+def get_image():
+    filename = './static/dfa.png'
+    return send_file(filename, mimetype='image/png')
 
 def parse_grammar(Grammer):
     grammars = Grammer
@@ -383,7 +413,7 @@ def construct_dfa():
                         # print rel
                         r = int(rel[1:3])
 
-                print("node %d relates to %s for %s" % (i, r, a))
+                # print("node %d relates to %s for %s" % (i, r, a))
                 relation.append(chr(i + 97) + chr(r + 97))
                 r1.append(a)
 
@@ -402,7 +432,7 @@ def construct_dfa():
         lst = ['red', 'violet', 'blue', 'green']
         random_color = random.choice(lst)
         dot.edge(relation[i][0], relation[i][1], label=r1[i], color=random_color)
-    dot.render('dfa', view=True)
+    dot.render('static/dfa', view=True)
 
 def process_input(input_to_parse):
     to_parse = input_to_parse
@@ -462,4 +492,4 @@ def process_input(input_to_parse):
     return output_dict
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
