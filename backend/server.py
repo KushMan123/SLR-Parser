@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask import *
 from  typing import *
 import json
@@ -8,8 +9,8 @@ from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
 run_with_ngrok(app)
+CORS(app)
 
-    
 Grammer = []
 G = {}
 C = {}
@@ -37,6 +38,7 @@ def driver():
     items()
     global parse_table
     parse_table = [["" for c in range(len(terminals) + len(nonterminals) + 1)] for r in range(len(C))]
+    print_info()
     construct_dfa()
     response = jsonify({"status" : "200 OK"})
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -70,6 +72,21 @@ def get_nonterminals():
 @app.route("/parsingtable")
 def get_parsetable():
     response = jsonify(parse_table)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
+@app.route("/closure")
+def get_closure():
+    output_dict = {}
+    for i in sorted(C.keys()):
+        for j in C[i]:
+            for item in (C[i][j]):
+                try:
+                    output_dict[i] += [str(j) + " -> " + ''.join(item)]
+                except:
+                    output_dict[i] = [str(j) + " -> " + ''.join(item)]
+    response = jsonify(output_dict)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -271,97 +288,97 @@ def ACTION(i, a):
         return "acc"
     return ""
 
-# def print_info():
-#     print ("GRAMMAR:")
-#     for head in G.keys():
-#         if head == start:
-#             continue
-#         print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))), end="")
-#         num_prods = 0
-#         for prods in G[head]:
-#             if num_prods > 0:
-#                 print ("|",end="")
-#             for prod in prods:
-#                 print (prod,end="")
-#             num_prods += 1
-#         print
-#     print ("\nAUGMENTED GRAMMAR:")
-#     i = 0
-#     for head in G.keys():
-#         for prods in G[head]:
-#             print ("{:>{width}}:".format(str(i), width=len(str(sum(len(v) for v in iter(G.values())) - 1))),end="")
-#             print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))),end="")
-#             for prod in prods:
-#                 print (prod,end="")
-#             print
-#             i += 1
-#     print ("\nTERMINALS   :", terminals)
-#     print ("NONTERMINALS:", nonterminals)
-#     print ("SYMBOLS     :", symbols)
-#     print ("\nFIRST:")
-#     for head in G:
-#         print ("{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
-#         print ("{",end="")
-#         firsts[head] = "{"
-#         num_terms = 0
-#         for terms in FIRST(head):
-#             if num_terms > 0:
-#                 print (", ",end="")
-#                 firsts[head] += ","
-#             print (terms,end="")
-#             firsts[head] += terms
-#             num_terms += 1
-#         print ("}")
-#         firsts[head] += "}"
-#     print ("\nFOLLOW:")
-#     for head in G:
-#         print( "{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
-#         print( "{",end="")
-#         num_terms = 0
-#         follows[head] = "{"
-#         for terms in FOLLOW(head):
-#             if num_terms > 0:
-#                 print (", ",end="")
-#                 follows[head] += ","
-#             print (terms,end="")
-#             follows[head] += terms
-#             num_terms += 1
-#         print ("}")
-#         follows[head] += "}"
-#     print(follows)
+def print_info():
+    print ("GRAMMAR:")
+    for head in G.keys():
+        if head == start:
+            continue
+        print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))), end="")
+        num_prods = 0
+        for prods in G[head]:
+            if num_prods > 0:
+                print ("|",end="")
+            for prod in prods:
+                print (prod,end="")
+            num_prods += 1
+        print
+    print ("\nAUGMENTED GRAMMAR:")
+    i = 0
+    for head in G.keys():
+        for prods in G[head]:
+            print ("{:>{width}}:".format(str(i), width=len(str(sum(len(v) for v in iter(G.values())) - 1))),end="")
+            print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))),end="")
+            for prod in prods:
+                print (prod,end="")
+            print
+            i += 1
+    print ("\nTERMINALS   :", terminals)
+    print ("NONTERMINALS:", nonterminals)
+    print ("SYMBOLS     :", symbols)
+    print ("\nFIRST:")
+    for head in G:
+        print ("{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
+        print ("{",end="")
+        firsts[head] = "{"
+        num_terms = 0
+        for terms in FIRST(head):
+            if num_terms > 0:
+                print (", ",end="")
+                firsts[head] += ","
+            print (terms,end="")
+            firsts[head] += terms
+            num_terms += 1
+        print ("}")
+        firsts[head] += "}"
+    print ("\nFOLLOW:")
+    for head in G:
+        print( "{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
+        print( "{",end="")
+        num_terms = 0
+        follows[head] = "{"
+        for terms in FOLLOW(head):
+            if num_terms > 0:
+                print (", ",end="")
+                follows[head] += ","
+            print (terms,end="")
+            follows[head] += terms
+            num_terms += 1
+        print ("}")
+        follows[head] += "}"
+    print(follows)
 
-#     print ("\nITEMS:")
-#     for i in range(len(C)):
-#         print ('I' + str(i) + ':')
-#         for keys in C['I' + str(i)]:
-#             for prods in C['I' + str(i)][keys]:
-#                 print ("{:>{width}} ->".format(keys, width=len(max(G.keys(), key=len))),end="")
-#                 for prod in prods:
-#                     print (prod,end="")
-#                 print
-#         print
+    print ("\nITEMS:")
+    for i in range(len(C)):
+        print ('I' + str(i) + ':')
+        for keys in C['I' + str(i)]:
+            for prods in C['I' + str(i)][keys]:
+                print ("{:>{width}} ->".format(keys, width=len(max(G.keys(), key=len))),end="")
+                for prod in prods:
+                    print (prod,end="")
+                print
+        print
 
-#     for i in range(len(parse_table)):       #len gives number of states
-#         for j in symbols:
-#             ACTION(i, j)
-#     print()
-#     print ("PARSING TABLE:")
-#     print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
-#     print ("|{:^8}|".format('STATE'),end="")
-#     for terms in terminals:
-#         print ("{:^7}|".format(terms),end="")
-#     print ("{:^7}|".format("$"),end="")
-#     for nonterms in nonterminals:
-#         if nonterms == start:
-#             continue
-#         print ("{:^7}|".format(nonterms),end="")
-#     print ("\n+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
-#     for i in range(len(parse_table)):
-#         print ("|{:^8}|".format(i),end="")
-#         for j in range(len(parse_table[i]) - 1):
-#             print ("{:^7}|".format(parse_table[i][j]),end="")
-#         print
-#     print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+    for i in range(len(parse_table)):       #len gives number of states
+        for j in symbols:
+            ACTION(i, j)
+    print()
+    print ("PARSING TABLE:")
+    print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+    print ("|{:^8}|".format('STATE'),end="")
+    for terms in terminals:
+        print ("{:^7}|".format(terms),end="")
+    print ("{:^7}|".format("$"),end="")
+    for nonterms in nonterminals:
+        if nonterms == start:
+            continue
+        print ("{:^7}|".format(nonterms),end="")
+    print ("\n+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+    for i in range(len(parse_table)):
+        print ("|{:^8}|".format(i),end="")
+        for j in range(len(parse_table[i]) - 1):
+            print ("{:^7}|".format(parse_table[i][j]),end="")
+        print
+    print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
 
 def construct_dfa():
     Z = []

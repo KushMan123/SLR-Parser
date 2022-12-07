@@ -7,42 +7,56 @@ digraph {
  R ->.L
 " color=yellow xlabel=I0]
 	b [label="S' ->S.
-" color=pink xlabel=I1]
+" color=red xlabel=I1]
 	c [label=" S ->L.=R
  R ->L.
-" color=yellow xlabel=I2]
+" color=green xlabel=I2]
 	d [label=" S ->R.
-" color=blue xlabel=I3]
+" color=pink xlabel=I3]
 	e [label=" L ->*.R
  L ->.*R
  L ->.id
  R ->.L
-" color=green xlabel=I4]
+" color=blue xlabel=I4]
 	f [label=" L ->id.
-" color=blue xlabel=I5]
+" color=red xlabel=I5]
 	g [label=" S ->L=.R
  R ->.L
  L ->.*R
  L ->.id
-" color=yellow xlabel=I6]
+" color=green xlabel=I6]
 	h [label=" R ->L.
-" color=blue xlabel=I7]
+" color=green xlabel=I7]
 	i [label=" L ->*R.
-" color=green xlabel=I8]
+" color=yellow xlabel=I8]
 	j [label=" S ->L=R.
-" color=blue xlabel=I9]
-	a -> e [label=S color=red]
+" color=pink xlabel=I9]
+	a -> e [label=S color=blue]
 	a -> f [label=L color=green]
 	a -> b [label="=" color=blue]
 	a -> c [label="*" color=blue]
-	a -> d [label=id color=red]
+	a -> d [label=id color=green]
 	c -> g [label="S'" color=red]
-	e -> e [label=S color=green]
-	e -> f [label=L color=green]
-	e -> h [label="*" color=red]
+	e -> e [label=S color=blue]
+	e -> f [label=L color=red]
+	e -> h [label="*" color=violet]
 	e -> i [label=id color=green]
-	g -> e [label=S color=red]
-	g -> f [label=L color=violet]
-	g -> h [label="*" color=violet]
-	g -> j [label=id color=blue]
+	g -> e [label=S color=blue]
+	g -> f [label=L color=blue]
+	g -> h [label="*" color=green]
+	g -> j [label=id color=green]
+	a -> e [label=S color=green]
+	a -> f [label=L color=violet]
+	a -> b [label="=" color=green]
+	a -> c [label="*" color=violet]
+	a -> d [label=id color=green]
+	c -> g [label="S'" color=blue]
+	e -> e [label=S color=blue]
+	e -> f [label=L color=green]
+	e -> h [label="*" color=blue]
+	e -> i [label=id color=blue]
+	g -> e [label=S color=blue]
+	g -> f [label=L color=blue]
+	g -> h [label="*" color=red]
+	g -> j [label=id color=green]
 }
