@@ -2,9 +2,6 @@ from flask import Flask
 from  typing import *
 app = Flask(__name__)
 
-
-
-
 Grammer = {}
 Closures = {}
 Start =  ""
@@ -19,11 +16,6 @@ def Hello():
     items()
     return Closures
 
-
-
-
-
-
 def InNonTerminal(s:str)->bool:
     if s.isupper() and s not in NonTerminasl:
         return True
@@ -34,7 +26,6 @@ def InTerminal(s:str)->bool:
         return True
     else:
         return False
-
 
 def driver()->None:
     global Grammer,Closures,Start,Terminals,NonTerminasl,Symbols
