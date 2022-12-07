@@ -86,7 +86,9 @@ def parse_input():
 @app.route('/get_image')
 def get_image():
     filename = './static/dfa.png'
-    return send_file(filename, mimetype='image/png')
+    response = send_file(filename, mimetype='image/png')
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 def parse_grammar(Grammer):
     grammars = Grammer
