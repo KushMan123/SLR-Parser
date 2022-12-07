@@ -1,0 +1,48 @@
+digraph {
+	a [label="S' ->.S
+ S ->.L=R
+ S ->.R
+ L ->.*R
+ L ->.id
+ R ->.L
+" color=pink xlabel=I0]
+	b [label="S' ->S.
+" color=pink xlabel=I1]
+	c [label=" S ->L.=R
+ R ->L.
+" color=red xlabel=I2]
+	d [label=" S ->R.
+" color=yellow xlabel=I3]
+	e [label=" L ->*.R
+ L ->.*R
+ L ->.id
+ R ->.L
+" color=blue xlabel=I4]
+	f [label=" L ->id.
+" color=red xlabel=I5]
+	g [label=" S ->L=.R
+ R ->.L
+ L ->.*R
+ L ->.id
+" color=red xlabel=I6]
+	h [label=" R ->L.
+" color=red xlabel=I7]
+	i [label=" L ->*R.
+" color=yellow xlabel=I8]
+	j [label=" S ->L=R.
+" color=pink xlabel=I9]
+	a -> e [label=S color=violet]
+	a -> f [label=L color=violet]
+	a -> b [label="=" color=green]
+	a -> c [label="*" color=green]
+	a -> d [label=id color=violet]
+	c -> g [label="S'" color=red]
+	e -> e [label=S color=red]
+	e -> f [label=L color=red]
+	e -> h [label="*" color=green]
+	e -> i [label=id color=violet]
+	g -> e [label=S color=red]
+	g -> f [label=L color=red]
+	g -> h [label="*" color=blue]
+	g -> j [label=id color=violet]
+}

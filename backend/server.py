@@ -2,6 +2,9 @@ from flask import Flask, jsonify
 from flask import *
 from  typing import *
 import json
+from graphviz import Digraph
+import random
+
 app = Flask(__name__)
 
     
@@ -15,6 +18,11 @@ symbols = []
 error=0
 firsts = {}
 follows = {}
+I = {}
+J = {}
+relation = []
+r1 = []
+
 
 #urls
 
@@ -27,9 +35,7 @@ def driver():
     items()
     global parse_table
     parse_table = [["" for c in range(len(terminals) + len(nonterminals) + 1)] for r in range(len(C))]
-    print_info()
-    # print(parse_table)
-    # process_input()
+    construct_dfa()
     return jsonify({"status" : "200 OK"})
 
 @app.route("/first")
@@ -233,97 +239,170 @@ def ACTION(i, a):
         return "acc"
     return ""
 
-def print_info():
-    print ("GRAMMAR:")
-    for head in G.keys():
-        if head == start:
-            continue
-        print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))), end="")
-        num_prods = 0
-        for prods in G[head]:
-            if num_prods > 0:
-                print ("|",end="")
-            for prod in prods:
-                print (prod,end="")
-            num_prods += 1
-        print
-    print ("\nAUGMENTED GRAMMAR:")
-    i = 0
-    for head in G.keys():
-        for prods in G[head]:
-            print ("{:>{width}}:".format(str(i), width=len(str(sum(len(v) for v in iter(G.values())) - 1))),end="")
-            print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))),end="")
-            for prod in prods:
-                print (prod,end="")
-            print
-            i += 1
-    print ("\nTERMINALS   :", terminals)
-    print ("NONTERMINALS:", nonterminals)
-    print ("SYMBOLS     :", symbols)
-    print ("\nFIRST:")
-    for head in G:
-        print ("{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
-        print ("{",end="")
-        firsts[head] = "{"
-        num_terms = 0
-        for terms in FIRST(head):
-            if num_terms > 0:
-                print (", ",end="")
-                firsts[head] += ","
-            print (terms,end="")
-            firsts[head] += terms
-            num_terms += 1
-        print ("}")
-        firsts[head] += "}"
-    print ("\nFOLLOW:")
-    for head in G:
-        print( "{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
-        print( "{",end="")
-        num_terms = 0
-        follows[head] = "{"
-        for terms in FOLLOW(head):
-            if num_terms > 0:
-                print (", ",end="")
-                follows[head] += ","
-            print (terms,end="")
-            follows[head] += terms
-            num_terms += 1
-        print ("}")
-        follows[head] += "}"
-    print(follows)
+# def print_info():
+#     print ("GRAMMAR:")
+#     for head in G.keys():
+#         if head == start:
+#             continue
+#         print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))), end="")
+#         num_prods = 0
+#         for prods in G[head]:
+#             if num_prods > 0:
+#                 print ("|",end="")
+#             for prod in prods:
+#                 print (prod,end="")
+#             num_prods += 1
+#         print
+#     print ("\nAUGMENTED GRAMMAR:")
+#     i = 0
+#     for head in G.keys():
+#         for prods in G[head]:
+#             print ("{:>{width}}:".format(str(i), width=len(str(sum(len(v) for v in iter(G.values())) - 1))),end="")
+#             print ("{:>{width}} ->".format(head, width=len(max(G.keys(), key=len))),end="")
+#             for prod in prods:
+#                 print (prod,end="")
+#             print
+#             i += 1
+#     print ("\nTERMINALS   :", terminals)
+#     print ("NONTERMINALS:", nonterminals)
+#     print ("SYMBOLS     :", symbols)
+#     print ("\nFIRST:")
+#     for head in G:
+#         print ("{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
+#         print ("{",end="")
+#         firsts[head] = "{"
+#         num_terms = 0
+#         for terms in FIRST(head):
+#             if num_terms > 0:
+#                 print (", ",end="")
+#                 firsts[head] += ","
+#             print (terms,end="")
+#             firsts[head] += terms
+#             num_terms += 1
+#         print ("}")
+#         firsts[head] += "}"
+#     print ("\nFOLLOW:")
+#     for head in G:
+#         print( "{:>{width}} =".format(head, width=len(max(G.keys(), key=len))),end="")
+#         print( "{",end="")
+#         num_terms = 0
+#         follows[head] = "{"
+#         for terms in FOLLOW(head):
+#             if num_terms > 0:
+#                 print (", ",end="")
+#                 follows[head] += ","
+#             print (terms,end="")
+#             follows[head] += terms
+#             num_terms += 1
+#         print ("}")
+#         follows[head] += "}"
+#     print(follows)
 
-    print ("\nITEMS:")
+#     print ("\nITEMS:")
+#     for i in range(len(C)):
+#         print ('I' + str(i) + ':')
+#         for keys in C['I' + str(i)]:
+#             for prods in C['I' + str(i)][keys]:
+#                 print ("{:>{width}} ->".format(keys, width=len(max(G.keys(), key=len))),end="")
+#                 for prod in prods:
+#                     print (prod,end="")
+#                 print
+#         print
+
+#     for i in range(len(parse_table)):       #len gives number of states
+#         for j in symbols:
+#             ACTION(i, j)
+#     print()
+#     print ("PARSING TABLE:")
+#     print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+#     print ("|{:^8}|".format('STATE'),end="")
+#     for terms in terminals:
+#         print ("{:^7}|".format(terms),end="")
+#     print ("{:^7}|".format("$"),end="")
+#     for nonterms in nonterminals:
+#         if nonterms == start:
+#             continue
+#         print ("{:^7}|".format(nonterms),end="")
+#     print ("\n+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+#     for i in range(len(parse_table)):
+#         print ("|{:^8}|".format(i),end="")
+#         for j in range(len(parse_table[i]) - 1):
+#             print ("{:^7}|".format(parse_table[i][j]),end="")
+#         print
+#     print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+
+def construct_dfa():
+    Z = []
+    pd = []
+    # print "\nITEMS:"
     for i in range(len(C)):
-        print ('I' + str(i) + ':')
+        # print 'I' + str(i) + ':'
+        I[i] = 'I' + str(i)
+        Z = ""
         for keys in C['I' + str(i)]:
+            Y = ""
             for prods in C['I' + str(i)][keys]:
-                print ("{:>{width}} ->".format(keys, width=len(max(G.keys(), key=len))),end="")
-                for prod in prods:
-                    print (prod,end="")
-                print
-        print
+                # print(G)
+                zzz = "{:>{width}} ->".format(keys, width=len(max(G.keys(), key=len)))
+                pd = ""
 
-    for i in range(len(parse_table)):       #len gives number of states
+                Z = Z + zzz
+                # print zzz,
+                for prod in prods:
+                    pd = pd + prod
+                    print (prod),
+                Z = Z + pd + "\n"
+                # print
+            Y = Y + Z
+        # print
+        J[i] = Y
+        # print Y
+    for i in range(len(parse_table)):
         for j in symbols:
             ACTION(i, j)
-    print()
-    print ("PARSING TABLE:")
-    print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
-    print ("|{:^8}|".format('STATE'),end="")
-    for terms in terminals:
-        print ("{:^7}|".format(terms),end="")
-    print ("{:^7}|".format("$"),end="")
-    for nonterms in nonterminals:
-        if nonterms == start:
-            continue
-        print ("{:^7}|".format(nonterms),end="")
-    print ("\n+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
-    for i in range(len(parse_table)):
-        print ("|{:^8}|".format(i),end="")
-        for j in range(len(parse_table[i]) - 1):
-            print ("{:^7}|".format(parse_table[i][j]),end="")
-        print
-    print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
+    global dot
+
+    dot = Digraph(format='png')
+    for i in range(len(C)):
+        for a in symbols:
+            rel = parse_table[i][symbols.index(a)]
+
+            if rel:
+                # print rel
+                if (len(rel) == 1):
+                    r = int(rel)
+                else:
+                    if (rel == 'acc') or (rel[0] == 'r'):
+                        continue
+                    elif '/' in rel:
+                        spos = rel.index('s')
+                        rel = rel[spos:spos + 2]
+                        # print rel
+                        r = int(rel[1:3])
+                    else:
+                        # print rel
+                        r = int(rel[1:3])
+
+                print("node %d relates to %s for %s" % (i, r, a))
+                relation.append(chr(i + 97) + chr(r + 97))
+                r1.append(a)
+
+    # print relation
+    # print r1
+
+    M = [v for v in I.values()]
+    N = [v for v in J.values()]
+
+    for i in range(len(C)):
+        lst = ['red', 'yellow', 'blue', 'green', 'pink']
+        random_color = random.choice(lst)
+        dot.node(chr(97 + i), N[i], xlabel=M[i], color=random_color)
+
+    for i in range(len(relation)):
+        lst = ['red', 'violet', 'blue', 'green']
+        random_color = random.choice(lst)
+        dot.edge(relation[i][0], relation[i][1], label=r1[i], color=random_color)
+    dot.render('dfa', view=True)
 
 def process_input(input_to_parse):
     to_parse = input_to_parse
