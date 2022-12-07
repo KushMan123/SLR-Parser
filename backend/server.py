@@ -18,7 +18,7 @@ follows = {}
 
 #urls
 
-@app.route("/add",methods=["POST"])
+@app.route("/add-grammar",methods=["POST"])
 def driver():  
     global Grammer
     grammar = request.data
@@ -29,8 +29,28 @@ def driver():
     parse_table = [["" for c in range(len(terminals) + len(nonterminals) + 1)] for r in range(len(C))]
     print_info()
     # print(parse_table)
-    process_input()
+    # process_input()
+    return jsonify({"status" : "200 OK"})
+
+@app.route("/first")
+def get_first():
+    return jsonify(firsts)
+
+@app.route("/follows")
+def get_follow():
     return jsonify(follows)
+
+@app.route("/parsingtable")
+def get_parsetable():
+    return jsonify(parse_table)
+
+@app.route("/add-input",methods=["POST"])
+def parse_input():  
+    input = request.data.decode()
+    to_parse = " ".join((input + " $").split()).split(" ")
+    res = process_input(to_parse)
+    return jsonify(res)
+
 
 def parse_grammar(Grammer):
     grammars = Grammer
@@ -305,17 +325,10 @@ def print_info():
         print
     print ("+" + "--------+" * (len(terminals) + len(nonterminals) + 1))
 
-def process_input():
-    # get_input = input("\nEnter Input: ")
-    # to_parse = " ".join((get_input + " $").split()).split(" ")
-    to_parse = ['id', '=', 'id', '$']
+def process_input(input_to_parse):
+    to_parse = input_to_parse
     pointer = 0
     stack = ['0']
-
-    # print(G)
-    # print "\n+--------+----------------------------+----------------------------+----------------------------+"
-    # print "|{:^8}|{:^28}|{:^28}|{:^28}|".format("STEP", "STACK", "INPUT", "ACTION")
-    # print "+--------+----------------------------+----------------------------+----------------------------+"
 
     step = 1
     output_dict = dict()
@@ -328,29 +341,27 @@ def process_input():
 
         for i in stack:
             stack_content += i
+
         lst.append(stack_content)
         output_dict.update({step: lst})
         i = pointer
+
         while i < len(to_parse):
             input_content += to_parse[i]
             i += 1
-        # output_dict.update({step: lst+[input_content]})
-        # output_dict[step] += [input_content]
+       
         get_action = ACTION(top_stack, curr_symbol)
 
         if "/" in get_action:
             output_dict.update({step: lst+[input_content]+[get_action+". So conflict"]})
-            # output_dict[step] += [get_action+". So conflict"]
             break
         if "s" in get_action:
             output_dict.update({step: lst+[input_content]+[get_action]})
-            # output_dict[step] += [get_action]
             stack.append(curr_symbol)
             stack.append(get_action[1:])
             pointer += 1
         elif "r" in get_action:
             output_dict.update({step: lst+[input_content]+[get_action]})
-            # output_dict[step] += [get_action]
             i = 0
             for head in G.keys():
                 for prods in G[head]:
@@ -369,7 +380,6 @@ def process_input():
             break
         print(output_dict)
         step += 1
-    print(output_dict)
     return output_dict
 
 if __name__ == "__main__":
