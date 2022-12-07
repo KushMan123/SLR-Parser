@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="style.css" />
+		<title>SLR Parser</title>
+	</head>
+	<body>
+		<div class="title">
+			<h1>SLR Parser</h1>
+			<p>Input your grammar and see the parser in action</p>
+		</div>
+        <div class="production">
+            <div class="first-section">
+                <div class="input">
+                    <div class="block-title">
+                        Write your Grammar
+                    </div>
+                    <form class="form">
+                        <div class="input-field">
+                            <div class="form-group inline-input">
+                                <label>Enter number of production rules</label>
+                                <div>
+                                    <input type="text" class="textinput"></input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-field">
+                            <div class="form-group col-direction">
+                                <label>Enter production rules</label>
+                                <div>
+                                    <input type="text" class="textinput"></input>
+                                </div>
+                                <div>
+                                    <input type="text" class="textinput"></input>
+                                </div>
+                                <div>
+                                    <input type="text" class="textinput"></input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-field center-align">
+                            <input type="submit"  value="Generate" class="btn"></input>
+                        </div>
+                    </form>
+                </div>
+                <div class="first-follow no-display">
+                    <div class="block-title">
+                        FIRST FOLLOW Table
+                    </div>
+                    <table class="table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Non-Terminals</th>
+                                <th>FIRST</th>
+                                <th>FOLLOW</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S'</td>
+                                <td>{*,id,*,id,S}</td>
+                                <td>{$}</td>
+                            </tr>
+                            <tr>
+                                <td>S</td>
+                                <td>{*,id}</td>
+                                <td>{$}</td>
+                            </tr>
+                            <tr>
+                                <td>L</td>
+                                <td>{*,id}</td>
+                                <td>{=,$}</td>
+                            </tr>
+                            <tr>
+                                <td>R</td>
+                                <td>{*,id}</td>
+                                <td>{=,$}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-section">
+                <h2>What is a SLR Parser?</h2>
+                <p>SLR is simple LR. It is the smallest class of grammar having few number of states. SLR is very easy to construct and is similar to LR parsing. The only difference between SLR parser and LR(0) parser is that in LR(0) parsing table, there is a chance of "shift reduced" conflict because we are entering "reduce" corresponding to all terminal states. We can solve this problem by entering "reduce" corresponding to FOLLOW of LHS of production in the terminating state. This is called SLR(1) collection of items</p>
+                <h3>Formatting Instructions</h3>
+                <ul>
+                    <li>The non-terminal on the left-hand-side of the first rule is the start non-terminal</li>
+                    <li>Specify the number of production rules and write each production rule in a separate input field</li>
+                    <li>Write the production rule is the form <span>A->aBB</span> </li>
+                    <li><span>$ is reserved as the end-of-input symbol</span>, and S' is reserved as an artificial start symbol. The grammar is<span>automatically augmented with the rule S' ::= start $</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="closure-set no-display">
+            <div class="block-title">
+				SLR Closure Table
+			</div>
+            <table class="table" border="1">
+                <thead>
+                    <tr>
+                        <th>Goto</th>
+                        <th>Kernel</th>
+                        <th>State</th>
+                        <th>Closure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>{S’ -> .S}</td>
+                        <td>0</td>
+                        <td>{S’ -> .S; S -> .L = R; S -> .R; L -> .* R; L -> .id; R -> .L}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(0, S)</td>
+                        <td>{S’ -> S.}</td>
+                        <td>1</td>
+                        <td>{S’ -> S.}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(0, L)</td>
+                        <td>{S -> L.= R; R -> L.}</td>
+                        <td>2</td>
+                        <td>{S -> L.= R; R -> L.}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(0, R)</td>
+                        <td>{S -> R.}</td>
+                        <td>3</td>
+                        <td>{S -> R.}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(0, *)</td>
+                        <td>{L -> *.R}</td>
+                        <td>4</td>
+                        <td>{L -> *.R; R -> .L; L -> .* R; L -> .id}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(0, id)</td>
+                        <td>{L -> id.}</td>
+                        <td>5</td>
+                        <td>{L -> id.}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(2, =)</td>
+                        <td>{S -> L =.R}</td>
+                        <td>6</td>
+                        <td>{S -> L =.R; R -> .L; L -> .* R; L -> .id}</td>
+                    </tr>
+                    <tr>
+                        <td>goto(4, R)</td>
+                        <td>{L -> * R.}</td>
+                        <td>7</td>
+                        <td>{L -> * R.}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="parsing-table no-display">
+            <div class="block-title">
+				parsing-table
+			</div>
+            <table class="table" border="1">
+                <thead>
+                    <tr>
+                        <th rowspan="2">State</th>
+                        <th colspan="4">Action</th>
+                        <th colspan="4">Goto</th>
+                    </tr>
+                    <tr>
+                        <th>=</th>
+                        <th>*</th>
+                        <th>id</th>
+                        <th>$</th>
+                        <th>S'</th>
+                        <th>S</th>
+                        <th>L</th>
+                        <th>R</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td></td>
+                        <td>s4</td>
+                        <td>s5</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="parser no-display">
+            <div class="block-title">
+				Parsing
+			</div>
+            <form class="form">
+				<div class="input-field">
+					<div class="form-group">
+						<label>Enter the String</label>
+						<div>
+							<input type="text" class="textinput"></input>
+						</div>
+                        <input type="submit"  value="Parse" class="btn"></input>
+					</div>
+				</div>
+            </form>
+            <table class="table" border="1">
+                <thead>
+                    <tr>
+                        <th>Stack</th>
+                        <th>Input String</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>S'</td>
+                        <td>{*,id,*,id,S}</td>
+                        <td>{$}</td>
+                    </tr>
+                    <tr>
+                        <td>S</td>
+                        <td>{*,id}</td>
+                        <td>{$}</td>
+                    </tr>
+                    <tr>
+                        <td>L</td>
+                        <td>{*,id}</td>
+                        <td>{=,$}</td>
+                    </tr>
+                    <tr>
+                        <td>R</td>
+                        <td>{*,id}</td>
+                        <td>{=,$}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+	</body>
+</html>

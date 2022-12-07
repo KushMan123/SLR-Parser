@@ -1,0 +1,261 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;700&display=swap");
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Raleway", sans-serif;
+}
+
+body {
+	background: #fafafa;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	color: rgb(75, 75, 75);
+}
+
+p {
+	font-size: 18px;
+}
+/* Title */
+.title {
+	max-width: 850px;
+	margin: 0 auto;
+	padding: 1em;
+	text-align: center;
+	border-bottom: 1px solid #eee;
+	letter-spacing: 0.05em;
+}
+
+.title h1 {
+	display: block;
+	font-size: 320%;
+	padding: 0.2em;
+}
+
+.title p {
+	font-size: 20px;
+}
+
+/* Token Input */
+.input {
+	max-width: 600px;
+	width: 100%;
+	margin: 20px auto;
+	padding: 30px;
+	border-radius: 10px;
+	border: 1px solid #eee;
+	margin-bottom: 20px;
+}
+
+.input .block-title,
+.first-follow .block-title,
+.closure-set .block-title,
+.parsing-table .block-title,
+.parser .block-title {
+	font-size: 25px;
+	font-weight: bold;
+	margin-bottom: 35px;
+	color: #888;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.input .form,
+.parser.form {
+	width: 100%;
+}
+
+.input .form .input-field .form-group,
+.parser .form .input-field .form-group {
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+}
+
+.input .form .input-field .form-group label,
+.parser .form .input-field .form-group label {
+	color: #757575;
+	margin-right: 10px;
+	font-size: 16px;
+	flex-basis: 70%;
+}
+
+.input .form .input-field .form-group div,
+.parser .form .input-field .form-group div {
+	color: #757575;
+	margin-right: 10px;
+	font-size: 14px;
+	flex-basis: 30%;
+}
+
+.input .form .input-field .form-group div .textinput,
+.parser .form .input-field .form-group div .textinput {
+	width: 100%;
+	outline: none;
+	border: 1px solid #d5dbd9;
+	font-size: 15px;
+	padding: 8px 10px;
+	border-radius: 3px;
+	transition: all 0.3 ease;
+	font-family: "Courier New", Courier, monospace;
+}
+
+.input .form .input-field .form-group div .textinput:focus,
+.parser .form .input-field .form-group div .textinput:focus {
+	border: 1px solid #0078e7;
+}
+
+.input .form .input-field .col-direction {
+	flex-direction: column;
+	align-items: baseline;
+}
+
+.input .form .input-field .inline-input label {
+	padding: 5px;
+}
+
+.input .form .input-field .col-direction label,
+.input .form .input-field .col-direction div {
+	flex-basis: 100%;
+	width: 100%;
+	padding: 5px;
+}
+
+.input .form .input-field .btn,
+.parser .form .input-field .btn {
+	width: 30%;
+	padding: 8px 10px;
+	font-size: 15px;
+	border: 0;
+	background: #0078e7;
+	color: white;
+	cursor: pointer;
+	border-radius: 3px;
+	outline: none;
+	transition: transform 0.2s ease;
+	font-weight: 600;
+}
+
+.input .form .center-align {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.input .form .input-field .btn:hover,
+.parser .form .input-field .btn:hover {
+	transform: scale(1.1);
+}
+
+.first-follow {
+	width: 500px;
+	margin: 40px auto;
+	margin-top: 20px;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	border-radius: 10px;
+}
+
+.table thead {
+	background-color: #0078e7;
+}
+
+.table thead tr th {
+	font-size: 18px;
+	font-weight: 600;
+	letter-spacing: 0.35px;
+	color: #ffffff;
+	padding: 10px;
+	vertical-align: middle;
+	border: 1px solid #dee2e685;
+}
+
+.table tbody tr td {
+	font-size: 16px;
+	letter-spacing: 0.35px;
+	padding: 8px;
+	text-align: center;
+	border: 1px solid #dee2e685;
+	font-family: "Courier New", Courier, monospace;
+	background-color: #fff;
+}
+
+.table tbody tr:hover {
+	background-color: #f3fcfd;
+	color: #0078e7;
+}
+
+.closure-set,
+.parsing-table,
+.parser {
+	width: 1100px;
+	margin: 40px auto;
+}
+
+.first-section {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1100px;
+	margin: 0 auto;
+	flex-direction: column;
+}
+
+.no-display {
+	display: none;
+}
+
+.production {
+	display: flex;
+	justify-content: center;
+	width: 1100px;
+	margin: 40px auto;
+}
+
+.production .first-section {
+	flex: 1;
+}
+
+.production .text-section {
+	margin-left: 40px;
+	text-align: justify;
+	flex: 1;
+}
+
+.production .text-section h2 {
+	color: #0078e7;
+	margin: 20px 0;
+}
+
+.production .text-section p {
+	line-height: 1.5rem;
+}
+
+.production .text-section h3 {
+	margin: 10px 0;
+}
+
+.production .text-section ul {
+	margin-left: 20px;
+	font-size: 18px;
+	line-height: 1.5rem;
+}
+.production .text-section ul li {
+	margin: 10px 0;
+}
+
+.production .text-section ul li::marker {
+	color: #0078e7;
+}
+
+.production .text-section ul li span {
+	font-weight: 600;
+}
