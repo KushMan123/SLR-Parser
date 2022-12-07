@@ -1,9 +1,11 @@
 from flask import Flask, jsonify
-
+from flask import *
+from  typing import *
+import json
 app = Flask(__name__)
 
     
-grammars = open("grammar.txt")
+Grammer = []
 G = {}
 C = {}
 start = ""
@@ -15,9 +17,13 @@ firsts = {}
 follows = {}
 
 #urls
-@app.route("/find")
+
+@app.route("/add",methods=["POST"])
 def driver():  
-    parse_grammar()
+    global Grammer
+    grammar = request.data
+    Grammer = json.loads(grammar)['data']
+    parse_grammar(Grammer)
     items()
     global parse_table
     parse_table = [["" for c in range(len(terminals) + len(nonterminals) + 1)] for r in range(len(C))]
@@ -26,7 +32,8 @@ def driver():
     process_input()
     return jsonify(follows)
 
-def parse_grammar():
+def parse_grammar(Grammer):
+    grammars = Grammer
     global G, start, terminals, nonterminals, symbols
     for line in grammars:
         line = " ".join(line.split())
