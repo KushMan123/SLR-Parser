@@ -40,8 +40,6 @@ def driver()->None:
       
         H.append(head)
     
-
-            
         productions=[i.strip().split(' ') for i in ''.join(prod[prod.index("->") + 2:]).split('|')]
         # print(production)
         if Start == "":
@@ -105,14 +103,6 @@ def Goto(production, sym):
                                 goto[keys].append(prod)
 
     return goto
-
-
-    
-
-
-
-
-
 
 def items()->None:
     global Closures,Grammer
